@@ -289,8 +289,7 @@ local function writeBlock(file, docs)
     end
 end
 
---- Recursively goes through the lines and writes
--- double comments and extracts information from tripple comment blocks.
+--- Recursively goes through the lines and writes double comments and extracts information from tripple comment blocks.
 local function main()
     local lines = getLines()
     local index = 1
