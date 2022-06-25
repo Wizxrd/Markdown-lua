@@ -204,5 +204,4 @@ Return | Type
 none |  | 
 
 ## ***main()***
-Recursively goes through the lines and writes  
-double comments and extracts information from tripple comment blocks.  
+Recursively goes through the lines and writes double comments and extracts information from tripple comment blocks.  
