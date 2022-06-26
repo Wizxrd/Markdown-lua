@@ -55,15 +55,19 @@ local exam = example("exam1", {[1] = "hello"})
 ---  
 ## ***Functions***  
   
-## ***getLines()***
+### ***getLines(path)***
 Get the lines from a file    
+Parameter | Type | Required | Description
+-|-|-|-
+path | string | **✓** | the path to the file
+
 Return | Type
 -|-
 lines | array | 
 
-## ***getDescription(lines, index)***
+### ***getDescription(lines, index)***
 Get the description from a function    
-recursiverly goes through lines until the first @param.    
+recursiverly goes through lines until there is no more comments.  
 also returns a second variable that is the current index.    
 Parameter | Type | Required | Description
 -|-|-|-
@@ -75,7 +79,7 @@ Return | Type
 description | array | 
 index | number | 
 
-## ***getParams(lines, index)***
+### ***getParams(lines, index)***
 Get the parameters from a function  
 recursively goes through lines and collects comments underneath params.  
 also returns a second variable that is the current index.  
@@ -89,7 +93,7 @@ Return | Type
 params | array | 
 index | number | 
 
-## ***getReturns(lines, index)***
+### ***getReturns(lines, index)***
 Get the returns from a function  
 Parameter | Type | Required | Description
 -|-|-|-
@@ -101,7 +105,7 @@ Return | Type
 returns | array | 
 index | number | 
 
-## ***getUsage(lines, index)***
+### ***getUsage(lines, index)***
 Get the usage examples from a function  
 Parameter | Type | Required | Description
 -|-|-|-
@@ -113,7 +117,7 @@ Return | Type
 usage | array | 
 index | number | 
 
-## ***getFunction(lines, index)***
+### ***getFunction(lines, index)***
 Get the function sytax  
 Parameter | Type | Required | Description
 -|-|-|-
@@ -125,7 +129,7 @@ Return | Type
 syntax | string | 
 index | number | 
 
-## ***getBlock(lines, index)***
+### ***getBlock(lines, index)***
 Get a tripple comment block  
 Parameter | Type | Required | Description
 -|-|-|-
@@ -137,7 +141,7 @@ Return | Type
 block | string | 
 index | number | 
 
-## ***writeHeader(file, header)***
+### ***writeHeader(file, header)***
 Write the header which is a functions syntax.  
 Parameter | Type | Required | Description
 -|-|-|-
@@ -148,7 +152,7 @@ Return | Type
 -|-
 none |  | 
 
-## ***writeDescription(file, description)***
+### ***writeDescription(file, description)***
 Write the description for a function  
 Parameter | Type | Required | Description
 -|-|-|-
@@ -159,7 +163,7 @@ Return | Type
 -|-
 none |  | 
 
-## ***writeParams(file, params)***
+### ***writeParams(file, params)***
 Write the parameters for a function  
 Parameter | Type | Required | Description
 -|-|-|-
@@ -170,7 +174,7 @@ Return | Type
 -|-
 none |  | 
 
-## ***writeReturns(file, returns)***
+### ***writeReturns(file, returns)***
 Write the returns for a function  
 Parameter | Type | Required | Description
 -|-|-|-
@@ -181,7 +185,7 @@ Return | Type
 -|-
 none |  | 
 
-## ***writeUsage(file, usage)***
+### ***writeUsage(file, usage)***
 Write the usage examples for a function  
 Parameter | Type | Required | Description
 -|-|-|-
@@ -192,7 +196,7 @@ Return | Type
 -|-
 none |  | 
 
-## ***writeBlock(file, docs)***
+### ***writeBlock(file, docs)***
 Write a tripple comment block  
 Parameter | Type | Required | Description
 -|-|-|-
@@ -203,5 +207,5 @@ Return | Type
 -|-
 none |  | 
 
-## ***main()***
+### ***main()***
 Recursively goes through the lines and writes double comments and extracts information from tripple comment blocks.  

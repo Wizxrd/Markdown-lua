@@ -53,23 +53,26 @@
 -- local exam = example("exam1", {[1] = "hello"})
 -- ```
 -- ---
-local sourceFilePath = "C:/_gitMaster/markdown-lua/markdown.lua"
-local readmeFilePath = "C:/_gitMaster/markdown-lua/README.md"
+local paths = {
+    "C:/_gitMaster/markdown-lua/markdown.lua",
+    "C:/_gitMaster/DCS-Spawn/Spawn.lua",
+}
 
 -- ## ***Functions***
 --
 --- Get the lines from a file  
+-- @param #string path <*> [the path to the file]
 -- @return #array lines
-local function getLines()
+local function getLines(path)
     local lines = {}
-    for line in io.lines(sourceFilePath) do
+    for line in io.lines(path) do
         lines[#lines+1] = line
     end
     return lines
 end
 
 --- Get the description from a function  
--- recursiverly goes through lines until the first @param.  
+-- recursiverly goes through lines until there is no more comments.
 -- also returns a second variable that is the current index.  
 -- @param #array lines <*> [the array of lines]  
 -- @param #number index <*> [the current line index]  
@@ -83,9 +86,9 @@ local function getDescription(lines, index)
             description[#description+1] = line:match("%-%-%-%s(.*)")
             index = index + 1
             recurse()
-        elseif line and line:match("%-%-%s") then
+        elseif line and line:match("%-%-") then
             if not line:match("%-%-%s@") then
-                description[#description+1] = line:match("%-%-%s(.*)")
+                description[#description+1] = line:match("%-%-%s(.*)") or ""
                 index = index + 1
                 recurse()
             end
@@ -168,11 +171,7 @@ local function getUsage(lines, index)
         if line and line:match("%-%-%s@usage") then
             index = index + 1
             recurse()
-        elseif line and line:match("%-%-%s%s") then
-            usage[#usage+1] = ""
-            index = index + 1
-            recurse()
-        elseif line and line:match("%-%-%s%a") then
+        elseif line and line:match("%-%-") then
             local comment = line:match("%-%-%s(.*)")
             usage[#usage+1] = comment
             index = index + 1
@@ -216,7 +215,7 @@ end
 -- @param #string header <*> [the header to write]
 -- @return none
 local function writeHeader(file, header)
-    file:write("## ***"..header.."***\n")
+    file:write("### ***"..header.."***\n")
 end
 
 --- Write the description for a function
@@ -291,38 +290,41 @@ end
 
 --- Recursively goes through the lines and writes double comments and extracts information from tripple comment blocks.
 local function main()
-    local lines = getLines()
-    local index = 1
-    local file = io.open(readmeFilePath, "w+")
-    local function parse()
-        local line = lines[index]
-        if line:sub(1, 3) == "---" then
-            -- start func block
-            local block
-            block, index = getBlock(lines, index)
-            writeBlock(file, block)
-        elseif line:match("%-%-%s@fields") then
-            file:write("Field | Type | Description\n")
-            file:write("-|-|-\n")
-        elseif line:match("%-%-%s@field") then
-            local field = line:match("@field%s(.*)%s#")
-            local Type = line:match("#(%a+)")
-            local description = line:match("%[(.*)%]") or ""
-            file:write(field.." | "..Type.." | "..description.."\n")
-        elseif line:sub(1, 2) == "--" then
-            if line:match("%-%-%s") then
-                file:write(line:match("%-%-%s(.*)").."  \n")
-            else
-                file:write("  \n")
+    for _, path in pairs(paths) do
+        local lines = getLines(path)
+        local index = 1
+        local readme = path:gsub("%.lua", ".md")
+        local file = io.open(readme, "w+")
+        local function parse()
+            local line = lines[index]
+            if line:sub(1, 3) == "---" then
+                -- start func block
+                local block
+                block, index = getBlock(lines, index)
+                writeBlock(file, block)
+            elseif line:match("%-%-%s@fields") then
+                file:write("Field | Type | Description\n")
+                file:write("-|-|-\n")
+            elseif line:match("%-%-%s@field") then
+                local field = line:match("@field%s(.*)%s#")
+                local Type = line:match("#(%a+)")
+                local description = line:match("%[(.*)%]") or ""
+                file:write(field.." | "..Type.." | "..description.."\n")
+            elseif line:sub(1, 2) == "--" then
+                if line:match("%-%-%s") then
+                    file:write(line:match("%-%-%s(.*)").."  \n")
+                else
+                    file:write("  \n")
+                end
+            end
+            if index and index + 1 <= #lines then
+                index = index + 1
+                parse()
             end
         end
-        if index and index + 1 <= #lines then
-            index = index + 1
-            parse()
-        end
+        parse()
+        file:close()
     end
-    parse()
-    file:close()
 end
 
 main()
